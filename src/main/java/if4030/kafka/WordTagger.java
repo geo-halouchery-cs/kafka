@@ -81,7 +81,7 @@ public final class WordTagger {
     
     private static Map<String, String> lexique;
 
-    public WordTagger() {
+    public static void initDic() {
         lexique = new HashMap<>();
         try {
             BufferedReader br = new BufferedReader(new FileReader("Lexique383.tsv"));
@@ -105,7 +105,7 @@ public final class WordTagger {
     static void createWordFilterStream(final StreamsBuilder builder) {
         final KStream<String, String> source = builder.stream(INPUT_TOPIC);
 
-        source.peek(( key, word ) -> System.out.println( "key: " + key + " - word: " + word ));
+        // source.peek(( key, word ) -> System.out.println( "key: " + key + " - word: " + word ));
 
         final KStream<String, String> lemmatizedWords = source
             .mapValues(word -> getLemma(word))
@@ -118,6 +118,7 @@ public final class WordTagger {
     }
 
     public static void main(final String[] args) throws IOException {
+        initDic();
         final Properties props = getStreamsConfig(args);
 
         final StreamsBuilder builder = new StreamsBuilder();
