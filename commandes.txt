@@ -1,0 +1,49 @@
+kafka-storage.sh format -t `kafka-storage.sh random-uuid` -c /opt/kafka/config/kraft/server.properties && kafka-server-start.sh /opt/kafka/config/kraft/server.properties
+
+==================================================
+
+kafka-topics.sh --create --bootstrap-server localhost:9092 \
+        --replication-factor 1 --partitions 1 \
+        --topic lines-stream
+
+
+kafka-topics.sh --describe --bootstrap-server localhost:9092 \
+        --topic lines-stream
+
+
+
+kafka-topics.sh --create --bootstrap-server localhost:9092 \
+        --replication-factor 1 --partitions 1 \
+        --topic words-stream
+
+kafka-topics.sh --describe --bootstrap-server localhost:9092 \
+        --topic words-stream
+
+
+kafka-topics.sh --create --bootstrap-server localhost:9092 \
+        --replication-factor 1 --partitions 1 \
+        --topic tagged-words-stream
+
+kafka-topics.sh --describe --bootstrap-server localhost:9092 \
+        --topic tagged-words-stream
+
+
+kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+        --topic tagged-words-stream --from-beginning \
+        --formatter kafka.tools.DefaultMessageFormatter --property print.key=true \
+        --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
+        --property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+
+==================================================
+
+mvn package
+java -cp target/tp-kafka-0.0.1-SNAPSHOT.jar if4030.kafka.WordFilter
+
+==================================================
+
+java -cp target/tp-kafka-0.0.1-SNAPSHOT.jar if4030.kafka.WordTagger
+
+==================================================
+
+cat Une_conspiration_en_1537.txt | kafka-console-producer.sh --bootstrap-server localhost:9092 \
+        --topic lines-stream
