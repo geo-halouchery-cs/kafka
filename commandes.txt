@@ -27,12 +27,19 @@ kafka-topics.sh --create --bootstrap-server localhost:9092 \
 kafka-topics.sh --describe --bootstrap-server localhost:9092 \
         --topic tagged-words-stream
 
+kafka-topics.sh --describe --bootstrap-server localhost:9092 \
+        --topic command-topic
 
-// kafka-console-consumer.sh --bootstrap-server localhost:9092 \
-//        --topic tagged-words-stream --from-beginning \
-//        --formatter kafka.tools.DefaultMessageFormatter --property print.key=true \
-//        --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
-//        --property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+kafka-console-producer.sh --bootstrap-server localhost:9092 \
+        --topic command-topic
+
+==================================================
+
+ kafka-console-consumer.sh --bootstrap-server localhost:9092 \
+        --topic tagged-words-stream --from-beginning \
+        --formatter kafka.tools.DefaultMessageFormatter --property print.key=true \
+        --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
+        --property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 
 mvn package
 java -cp target/tp-kafka-0.0.1-SNAPSHOT.jar if4030.kafka.WordFilter
@@ -49,3 +56,4 @@ java -cp target/tp-kafka-0.0.1-SNAPSHOT.jar if4030.kafka.WordCount
 
 cat Une_conspiration_en_1537.txt | kafka-console-producer.sh --bootstrap-server localhost:9092 \
         --topic lines-stream
+

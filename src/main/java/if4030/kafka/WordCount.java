@@ -38,12 +38,13 @@ public class WordCount {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
             for (ConsumerRecord<String, String> record : records) {
                 if (record.topic().equals("tagged-words-stream")) {
-                    String lemme = record.key();
+                    String lemme = record.value();
                     String cgram = lexique.get(lemme);
                     int count = countWords.getOrDefault(lemme, 0);
                     countWords.put(lemme, count + 1);
                 } else if (record.topic().equals("command-topic") && record.value().equals("END")) {
                     countTopWords();
+                    return;
                 }
             }
         }
