@@ -74,7 +74,7 @@ public class WordCount {
             System.out.println("Top 20 words for cgram " + cgram);
             int count = 0;
             for (Map.Entry<String, Integer> entry : list) {
-                if (lexique.get(entry.getKey()).equals(cgram)) {
+                if (lexique.getOrDefault(entry.getKey(), null).equals(cgram)) {
                     System.out.println(entry.getKey() + " : " + entry.getValue());
                     count++;
                     if (count == 20) {
